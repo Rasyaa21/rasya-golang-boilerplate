@@ -29,25 +29,25 @@ func HashPassword(password string) (string, error) {
 	return string(hashedPassword), nil
 }
 
-func StoreUser(name, email, password string) error {
+func StoreUser(name, email, password string) (*User, error) {
 	if config.DB == nil {
-		return gorm.ErrInvalidDB
+		return nil, gorm.ErrInvalidDB
 	}
 
 	hashedPassword, err := HashPassword(password)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	user := User{Name: name, Email: email, Password: hashedPassword}
 
 	res := config.DB.Create(&user)
 	if res.Error != nil {
-		return res.Error
+		return nil, res.Error
 	}
 
 	fmt.Println("✅ User successfully stored in database")
-	return nil
+	return &user, nil
 }
 
 func GetUserByEmail(email string) (*User, error) {
@@ -61,7 +61,10 @@ func GetUserByEmail(email string) (*User, error) {
 func (user *User) CheckPassword(password string) (bool, error) {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return false, nil
+		}
 		return false, err
 	}
-	return true, err
+	return true, nil
 }
