@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"rasya-golang-boilerplate/config"
+	"rasya-golang-boilerplate/middlewares"
+	"rasya-golang-boilerplate/routes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,9 +18,9 @@ func main() {
 	defer config.DisconnectDB(db)
 
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "Hello, World!"})
-	})
+	api := r.Group("/api")
 
+	routes.UserRoutes(api)
+	middlewares.PrintRoutes(r)
 	r.Run(":8080")
 }
