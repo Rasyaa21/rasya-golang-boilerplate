@@ -10,12 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetAllUsers(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"data": "hello",
-	})
-}
-
 func Register(c *gin.Context) {
 	var input validation.RegisterInput
 
@@ -70,4 +64,21 @@ func Login(c *gin.Context) {
 	fmt.Println(token)
 
 	c.JSON(http.StatusOK, gin.H{"message": token})
+}
+
+func CurrentUser(c *gin.Context) {
+	user_id, err := token.ExtractTokenID(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	u, err := models.GetUserByID(user_id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u})
 }

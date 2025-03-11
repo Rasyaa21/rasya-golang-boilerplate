@@ -38,7 +38,6 @@ func StoreUser(name, email, password string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	user := User{Name: name, Email: email, Password: hashedPassword}
 
 	res := config.DB.Create(&user)
@@ -67,4 +66,21 @@ func (user *User) CheckPassword(password string) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func GetUserByID(uid uint) (User, error) {
+
+	var u User
+
+	if err := config.DB.First(&u, uid).Error; err != nil {
+		return u, errors.New("user not found")
+	}
+
+	u.PrepareGive()
+
+	return u, nil
+}
+
+func (u *User) PrepareGive() {
+	u.Password = ""
 }

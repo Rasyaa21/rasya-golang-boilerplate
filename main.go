@@ -20,7 +20,9 @@ func main() {
 	r := gin.Default()
 	api := r.Group("/api")
 
+	routes.AuthRoutes(api)
 	routes.UserRoutes(api)
 	middlewares.PrintRoutes(r)
+	api.Use(middlewares.JwtAuthMiddleware())
 	r.Run(":8080")
 }
