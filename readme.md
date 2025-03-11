@@ -93,7 +93,9 @@ func main() {
 ## API Endpoints
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET    | `/`      | Returns a welcome message |
+| POST    | `/api/auth/register`      | Register User |
+| POST    | `/api/auth/login`      | Login User |
+| GET    | `/api/user/`      | Get Current User Detail |
 
 ## License
 This project is licensed under the MIT License.
