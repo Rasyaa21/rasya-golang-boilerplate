@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"rasya-golang-boilerplate/config"
 	"rasya-golang-boilerplate/middlewares"
 	"rasya-golang-boilerplate/routes"
@@ -24,5 +25,5 @@ func main() {
 	routes.UserRoutes(api)
 	middlewares.PrintRoutes(r)
 	api.Use(middlewares.JwtAuthMiddleware())
-	r.Run(":8080")
+	r.Run(":" + os.Getenv("DB_HOST_PORT"))
 }
